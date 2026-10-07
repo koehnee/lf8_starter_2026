@@ -15,7 +15,7 @@ public class OpenApiConfig {
     OpenAPI api() {
         Info info = new Info()
                 .title("LF8-Starter")
-                .description("Zuerst GetToken.http in IntelliJ ausführen (client_credentials an http://localhost:9000/default/token). "
+                .description("Zuerst GetToken.http in IntelliJ ausführen (client_credentials an http://localhost:9001/default/token). "
                         + "In Swagger oben rechts Authorize wählen und das access_token einfügen; Swagger setzt Bearer automatisch.")
                 .version("1.0");
         SecurityScheme bearerScheme = new SecurityScheme()
