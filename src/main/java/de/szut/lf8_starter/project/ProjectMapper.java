@@ -1,5 +1,8 @@
 package de.szut.lf8_starter.project;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class ProjectMapper {
     public Project fromRequest(ProjectRequest request) {
         Project entity = new Project();
