@@ -362,7 +362,7 @@
   "sub": "lf8-starter",      <span class="c">← wer: die Client-ID</span>
   "aud": "default",
   "nbf": 1790770776,
-  "iss": "http://localhost:9000/default",
+  "iss": "http://localhost:9001/default",
                              <span class="c">← Aussteller</span>
   "exp": 1790774376,         <span class="c">← 30.09.2026 15:19:36</span>
   "iat": 1790770776,         <span class="c">← 30.09.2026 14:19:36</span>
@@ -398,7 +398,7 @@ const PROJECT_LABELS = {
   client: ['Client', 'IntelliJ HTTP Client: GetToken.http holt das Token, SampleRequests.http schickt es mit', ''],
   resource: ['Resource Server', 'euer Service (Projektverwaltung, :8080)', ''],
   employee: ['Resource Server', 'Employee-Service (bereits vorhanden, :8089)', ''],
-  auth: ['Authorization Server', 'mock-oauth2-server — lokal, docker compose, :9000', ''],
+  auth: ['Authorization Server', 'mock-oauth2-server — lokal, docker compose, :9001', ''],
   owner: ['Resource Owner', 'hier keine Person beteiligt', 'client_credentials: die Anwendung meldet sich selbst an'],
 };
 
@@ -446,7 +446,7 @@ const PROJECT_STEPS = [
     data: 'GET /… (euer Endpunkt)\nAuthorization: Bearer {{token}}',
     sprich: 'Jetzt kommt euer Service ins Spiel. Swagger funktioniert genauso: Authorize klicken, Token einfügen.' },
   { from: 'resource', to: 'auth', label: '4. Schlüssel holen (einmalig)',
-    data: 'GET http://localhost:9000/default/jwks\n→ öffentlicher RSA-Schlüssel (kid: default)',
+    data: 'GET http://localhost:9001/default/jwks\n→ öffentlicher RSA-Schlüssel (kid: default)',
     sprich: 'Beim ersten Token fragt Spring Security den Anmeldedienst nach seinem öffentlichen Schlüssel und merkt ihn sich. Das Token schickt es dabei nicht mit. Die gestrichelte Linie bleibt stehen: Euer Service vertraut diesem Aussteller.' },
   { from: 'resource', to: null, label: '5. Token prüfen',
     data: 'Signatur passt zum öffentlichen Schlüssel?\nnbf/exp: gerade gültig?\nnein → sofort 401, euer Controller läuft gar nicht erst',
