@@ -32,6 +32,12 @@ public class ProjectService {
         return projectMapper.toResponse(savedEntity);
     }
 
+    public ProjectResponse getProjectById(long projectId) {
+        return projectRepository.findById(projectId)
+                .map(projectMapper::toResponse)
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+    }
+
     public List<ProjectResponse> getAllProjects() {
         return projectRepository.findAll()
                 .stream()
