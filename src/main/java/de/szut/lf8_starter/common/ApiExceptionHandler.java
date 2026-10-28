@@ -7,6 +7,7 @@ import de.szut.lf8_starter.employee.EmployeeNotFoundException;
 import de.szut.lf8_starter.employee.EmployeeServiceUnavailableException;
 import de.szut.lf8_starter.hello.HelloNotFoundException;
 import de.szut.lf8_starter.project.InvalidProjectDateRangeException;
+import de.szut.lf8_starter.project.ProjectNotFoundException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -23,9 +24,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ApiExceptionHandler {
 
-    @ExceptionHandler({HelloNotFoundException.class, EmployeeNotFoundException.class})
+    @ExceptionHandler({
+            HelloNotFoundException.class,
+            EmployeeNotFoundException.class,
+            ProjectNotFoundException.class
+    })
     public ProblemDetail notFound(RuntimeException exception) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ProblemDetail.forStatusAndDetail(
+                HttpStatus.NOT_FOUND,
+                exception.getMessage()
+        );
     }
 
     @ExceptionHandler(EmployeeServiceUnavailableException.class)
