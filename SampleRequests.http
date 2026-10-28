@@ -39,3 +39,19 @@ Authorization: Bearer {{token}}
 ###
 GET http://localhost:8089/qualifications
 Authorization: Bearer {{token}}
+
+### Create a new project
+POST http://localhost:8080/projects
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Website Relaunch",
+  "responsibleEmployeeId": 1,
+  "customerId": 1,
+  "customerContact": "Ekaterina, ekaterina@example.com",
+  "goalComment": "Entwicklung einer Anwendung",
+  "startDate": "2026-10-28",
+  "plannedEndDate": "2027-03-31",
+  "actualEndDate": null
+}
