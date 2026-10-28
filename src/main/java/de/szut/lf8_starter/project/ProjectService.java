@@ -3,6 +3,7 @@ package de.szut.lf8_starter.project;
 import de.szut.lf8_starter.employee.EmployeeClient;
 import de.szut.lf8_starter.employee.EmployeeNotFoundException;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 public class ProjectService {
@@ -29,5 +30,12 @@ public class ProjectService {
         Project entity = projectMapper.fromRequest(request);
         Project savedEntity = projectRepository.save(entity);
         return projectMapper.toResponse(savedEntity);
+    }
+
+    public List<ProjectResponse> getAllProjects() {
+        return projectRepository.findAll()
+                .stream()
+                .map(projectMapper::toResponse)
+                .toList();
     }
 }
