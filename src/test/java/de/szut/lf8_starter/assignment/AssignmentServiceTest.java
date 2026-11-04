@@ -1,10 +1,14 @@
 package de.szut.lf8_starter.assignment;
 
+import de.szut.lf8_starter.assignment.exception.DuplicateProjectAssignmentException;
+import de.szut.lf8_starter.employee.EmployeeClient;
+import de.szut.lf8_starter.employee.EmployeeDto;
 import de.szut.lf8_starter.project.Project;
 import de.szut.lf8_starter.project.ProjectRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -17,13 +21,15 @@ class AssignmentServiceTest {
 
     private AssignmentRepository assignmentRepository;
     private ProjectRepository projectRepository;
+    private EmployeeClient employeeClient;
     private AssignmentService service;
 
     @BeforeEach
     void setUp() {
         assignmentRepository = mock(AssignmentRepository.class);
         projectRepository = mock(ProjectRepository.class);
-        service = new AssignmentService(assignmentRepository, projectRepository);
+        employeeClient = mock(EmployeeClient.class);
+        service = new AssignmentService(assignmentRepository, projectRepository, employeeClient);
     }
 
     @Test
@@ -35,6 +41,8 @@ class AssignmentServiceTest {
         project.setId(projectId);
 
         when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
+        when(employeeClient.findById(employeeId))
+                .thenReturn(Optional.of(new EmployeeDto(employeeId, "Max", "Mustermann", List.of())));
         when(assignmentRepository.existsByProject_IdAndEmployeeId(projectId, employeeId)).thenReturn(true);
 
         AssignEmployeeRequest request = new AssignEmployeeRequest(employeeId, 22L);

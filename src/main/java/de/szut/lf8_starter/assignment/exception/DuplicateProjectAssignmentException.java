@@ -1,4 +1,4 @@
-package de.szut.lf8_starter.assignment;
+package de.szut.lf8_starter.assignment.exception;
 
 public class DuplicateProjectAssignmentException extends RuntimeException {
 
