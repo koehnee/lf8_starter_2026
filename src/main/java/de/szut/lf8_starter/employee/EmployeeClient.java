@@ -1,5 +1,6 @@
 package de.szut.lf8_starter.employee;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +39,29 @@ public class EmployeeClient {
             return Optional.empty();
         } catch (RestClientResponseException exception) {
             throw new EmployeeServiceUnavailableException(exception.getStatusCode(), exception);
+        } catch (ResourceAccessException exception) {
+            throw new EmployeeServiceUnavailableException(exception);
+        }
+    }
+
+    public Optional<List<QualificationDto>> findQualificationsByEmployeeId(long id) {
+        try {
+            QualificationDto[] qualifications = client.get()
+                    .uri("/employees/{id}/qualifications", id)
+                    .headers(headers -> headers.setBearerAuth(currentToken()))
+                    .retrieve()
+                    .body(QualificationDto[].class);
+
+            return Optional.ofNullable(qualifications)
+                    .map(List::of);
+
+        } catch (HttpClientErrorException.NotFound exception) {
+            return Optional.empty();
+
+        } catch (RestClientResponseException exception) {
+            throw new EmployeeServiceUnavailableException(
+                    exception.getStatusCode(), exception);
+
         } catch (ResourceAccessException exception) {
             throw new EmployeeServiceUnavailableException(exception);
         }
