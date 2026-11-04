@@ -44,4 +44,10 @@ public class ProjectService {
                 .map(projectMapper::toResponse)
                 .toList();
     }
+
+    public void deleteById(long projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+        projectRepository.delete(project);
+    }
 }
