@@ -1,4 +1,4 @@
-package de.szut.lf8_starter.project;
+package de.szut.lf8_starter.assignment;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
