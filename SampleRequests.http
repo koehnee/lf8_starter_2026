@@ -55,3 +55,15 @@ Content-Type: application/json
   "plannedEndDate": "2027-03-31",
   "actualEndDate": null
 }
+
+### Get all projects
+GET http://localhost:8080/projects
+Authorization: ******
+
+### Get project by id
+GET http://localhost:8080/projects/1
+Authorization: ******
+
+### Delete project by id
+DELETE http://localhost:8080/projects/1
+Authorization: ******
