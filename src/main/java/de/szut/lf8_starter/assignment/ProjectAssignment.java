@@ -1,5 +1,6 @@
-package de.szut.lf8_starter.project;
+package de.szut.lf8_starter.assignment;
 
+import de.szut.lf8_starter.project.Project;
 import jakarta.persistence.*;
 
 @Entity
