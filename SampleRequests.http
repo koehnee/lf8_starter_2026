@@ -40,6 +40,9 @@ Authorization: Bearer {{token}}
 GET http://localhost:8089/qualifications
 Authorization: Bearer {{token}}
 
+###
+GET http://localhost:8080/projects/1
+
 ### Create a new project
 POST http://localhost:8080/projects
 Authorization: Bearer {{token}}
