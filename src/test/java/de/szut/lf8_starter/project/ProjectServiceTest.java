@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -86,6 +88,27 @@ class ProjectServiceTest {
         assertThatThrownBy(() -> service.createResponse(request))
                 .isInstanceOf(InvalidProjectDateRangeException.class);
         verify(projectRepository, never()).save(any(Project.class));
+    }
+
+    @Test
+    void deletesExistingProject() {
+        Project project = new Project();
+        project.setId(5L);
+        when(projectRepository.findById(5L)).thenReturn(Optional.of(project));
+
+        service.deleteProjectById(5L);
+
+        verify(projectRepository).delete(project);
+    }
+
+    @Test
+    void deleteUnknownProjectThrowsNotFound() {
+        when(projectRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.deleteProjectById(99L))
+                .isInstanceOf(ProjectNotFoundException.class);
+        verify(projectRepository, times(1)).findById(99L);
+        verifyNoMoreInteractions(projectRepository);
     }
 
     private ProjectRequest validRequest() {
