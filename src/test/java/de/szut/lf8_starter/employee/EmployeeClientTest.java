@@ -4,11 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withResourceNotFound;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withUnauthorizedRequest;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withException;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withResourceNotFound;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withUnauthorizedRequest;
 
 import java.net.ConnectException;
 import java.time.Instant;
@@ -48,7 +48,6 @@ class EmployeeClientTest {
 
     @Test
     void forwardsTokenAndMapsSkills() {
-        // Arrange
         server.expect(requestTo("http://localhost:8089/employees/1"))
                 .andExpect(header(HttpHeaders.AUTHORIZATION, "Bearer student-token"))
                 .andRespond(withSuccess("""
@@ -56,10 +55,8 @@ class EmployeeClientTest {
                          "skillSet":[{"id":2,"skill":"Java"}],"extra":true}
                         """, MediaType.APPLICATION_JSON));
 
-        // Act
         EmployeeDto employee = client.findById(1).orElseThrow();
 
-        // Assert
         assertThat(employee.skillSet()).containsExactly(new QualificationDto(2L, "Java"));
         assertThat(employee.firstName()).isEqualTo("Max");
     }
@@ -93,15 +90,49 @@ class EmployeeClientTest {
 
     @Test
     void maps404ToEmpty() {
-        // Arrange
         server.expect(requestTo("http://localhost:8089/employees/999"))
                 .andExpect(header(HttpHeaders.AUTHORIZATION, "Bearer student-token"))
                 .andRespond(withResourceNotFound());
 
-        // Act
         var employee = client.findById(999);
 
-        // Assert
         assertThat(employee).isEmpty();
+    }
+
+    @Test
+    void findByIdWithQualificationsForwardsTokenAndMapsSkills() {
+        server.expect(requestTo("http://localhost:8089/employees/1"))
+                .andExpect(header(HttpHeaders.AUTHORIZATION, "Bearer student-token"))
+                .andRespond(withSuccess("""
+                        {"id":1,"firstName":"Max","lastName":"Mustermann",
+                         "skillSet":[{"id":2,"skill":"Java"}],"department":"IT"}
+                        """, MediaType.APPLICATION_JSON));
+
+        EmployeeDto employee = client.findByIdWithQualifications(1);
+
+        assertThat(employee.id()).isEqualTo(1L);
+        assertThat(employee.skillSet()).containsExactly(new QualificationDto(2L, "Java"));
+    }
+
+    @Test
+    void findByIdWithQualificationsMaps404ToNotFound() {
+        server.expect(requestTo("http://localhost:8089/employees/999"))
+                .andExpect(header(HttpHeaders.AUTHORIZATION, "Bearer student-token"))
+                .andRespond(withResourceNotFound());
+
+        assertThatThrownBy(() -> client.findByIdWithQualifications(999))
+                .isInstanceOf(EmployeeNotFoundException.class)
+                .hasMessageContaining("999");
+    }
+
+    @Test
+    void findByIdWithQualificationsMapsConnectionFailureToUnavailable() {
+        server.expect(requestTo("http://localhost:8089/employees/1"))
+                .andExpect(header(HttpHeaders.AUTHORIZATION, "Bearer student-token"))
+                .andRespond(withException(new ConnectException("Verbindung verweigert")));
+
+        assertThatThrownBy(() -> client.findByIdWithQualifications(1))
+                .isInstanceOf(EmployeeServiceUnavailableException.class)
+                .hasMessageContaining("nicht erreichbar");
     }
 }
