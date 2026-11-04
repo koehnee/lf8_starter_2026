@@ -96,7 +96,7 @@ class ProjectServiceTest {
         project.setId(5L);
         when(projectRepository.findById(5L)).thenReturn(Optional.of(project));
 
-        service.deleteProjectById(5L);
+        service.deleteById(5L);
 
         verify(projectRepository).delete(project);
     }
@@ -105,7 +105,7 @@ class ProjectServiceTest {
     void deleteUnknownProjectThrowsNotFound() {
         when(projectRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.deleteProjectById(99L))
+        assertThatThrownBy(() -> service.deleteById(99L))
                 .isInstanceOf(ProjectNotFoundException.class);
         verify(projectRepository, times(1)).findById(99L);
         verifyNoMoreInteractions(projectRepository);
