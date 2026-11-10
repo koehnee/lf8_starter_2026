@@ -3,6 +3,9 @@ package de.szut.lf8_starter.common;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import de.szut.lf8_starter.assignment.exception.DuplicateProjectAssignmentException;
+import de.szut.lf8_starter.assignment.exception.EmployeeNotAvailableException;
+import de.szut.lf8_starter.assignment.exception.QualificationNotOwnedException;
 import de.szut.lf8_starter.employee.EmployeeNotFoundException;
 import de.szut.lf8_starter.employee.EmployeeServiceUnavailableException;
 import de.szut.lf8_starter.hello.HelloNotFoundException;
@@ -43,6 +46,21 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(InvalidProjectDateRangeException.class)
     public ProblemDetail unprocessable(InvalidProjectDateRangeException exception) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_ENTITY, exception.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateProjectAssignmentException.class)
+    public ProblemDetail conflict(DuplicateProjectAssignmentException exception) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, exception.getMessage());
+    }
+
+    @ExceptionHandler(EmployeeNotAvailableException.class)
+    public ProblemDetail conflict(EmployeeNotAvailableException exception) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, exception.getMessage());
+    }
+
+    @ExceptionHandler(QualificationNotOwnedException.class)
+    public ProblemDetail unprocessable(QualificationNotOwnedException exception) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_ENTITY, exception.getMessage());
     }
 
