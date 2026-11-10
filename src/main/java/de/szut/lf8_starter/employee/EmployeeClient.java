@@ -1,9 +1,14 @@
 package de.szut.lf8_starter.employee;
 
-import java.util.List;
+import java.net.ConnectException;
+import java.time.Instant;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -44,19 +49,20 @@ public class EmployeeClient {
         }
     }
 
-    public Optional<List<QualificationDto>> findQualificationsByEmployeeId(long id) {
+    public EmployeeDto findQualificationsByEmployeeId(long id) {
         try {
-            QualificationDto[] qualifications = client.get()
-                    .uri("/employees/{id}/qualifications", id)
+            EmployeeDto employee = client.get()
+                    .uri("/employees/{id}", id)
                     .headers(headers -> headers.setBearerAuth(currentToken()))
                     .retrieve()
-                    .body(QualificationDto[].class);
-
-            return Optional.ofNullable(qualifications)
-                    .map(List::of);
+                    .body(EmployeeDto.class);
+            if (employee == null) {
+                throw new EmployeeNotFoundException(id);
+            }
+            return employee;
 
         } catch (HttpClientErrorException.NotFound exception) {
-            return Optional.empty();
+            throw new EmployeeNotFoundException(id);
 
         } catch (RestClientResponseException exception) {
             throw new EmployeeServiceUnavailableException(
